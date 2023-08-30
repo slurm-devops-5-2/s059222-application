@@ -1,0 +1,13 @@
+stages:
+- kubectl
+
+Kubectl:
+  stage: kubectl
+  image:
+    name: bitnami/kubectl:1.21.13
+    entrypoint: [""]
+  variables:
+    KUBECONFIG: /tmp/.kubeconfig
+  script:
+  - echo "$K8S_CONFIG" | base64 -d > $KUBECONFIG
+  - kubectl get nodes
