@@ -35,5 +35,3 @@ services:
   test:
     image: curlimages/curl:7.88.1
     command: /bin/sh -c "sleep 10 && curl -s http://app:5000/ -i -vvv"
-    depends_on:
-      - app
