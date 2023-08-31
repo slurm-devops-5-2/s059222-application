@@ -10,6 +10,8 @@ build:
   image: docker:24.0.5
   services:
     - docker:24.0.5-dind
+  variables:
+    DOCKER_HOST: ""  
   script:
     - docker build -t $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG.$CI_PIPELINE_ID .
 
