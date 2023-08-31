@@ -17,7 +17,6 @@ db:
       cpu: 200m
       memory: 128Mi
 
-
 application:
   image: gitlab.s059222.edu.slurm.io:5050/s059222/application
   imageTag: main.10
