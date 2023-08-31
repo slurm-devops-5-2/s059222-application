@@ -22,9 +22,8 @@ services:
       
   # Application Service
   app:
-    container_name: counter-app
-    build:
-      context: .
+    container_name: flask
+    image: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG.$CI_PIPELINE_ID
     restart: unless-stopped
     ports:
       - "5000:5000"
@@ -32,3 +31,9 @@ services:
       - redis
     mem_limit: 256m
     cpus: 0.3
+
+  test:
+    image: curlimages/curl:7.88.1
+    command: /bin/sh -c "sleep 10 && curl -s http://app:5000/ -i -vvv"
+    depends_on:
+      - app
