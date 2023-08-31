@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Chart.Name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.db.name }}
+  name: {{ .Values.db.name }}
+spec:
+  replicas: {{ .Values.db.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.db.name }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.db.name }}
+    spec:
+      volumes:
+      - name: application-pv-storage
+        persistentVolumeClaim:
+          claimName: application-pv-claim
+      containers:
+      - name: {{ .Values.db.name }}
+        image: {{ .Values.db.image }}:{{ .Values.db.imageTag }}
+        ports:
+        - containerPort: {{ .Values.db.service.app_port}}
+        volumeMounts:
+        - mountPath: "/data"
+          name: application-pv-storage
+        livenessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3
+        resources:
+{{ toYaml .Values.db.resources | indent 12 }}      
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 20

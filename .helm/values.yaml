@@ -1,0 +1,41 @@
+db:
+  image: redis
+  imageTag: 7-alpine
+
+  name: redis
+  replicas: 1
+
+  service:
+    app_port: 6379
+    port: 6379
+
+  resources:
+    limits:
+      cpu: 400m
+      memory: 256Mi
+    requests:
+      cpu: 200m
+      memory: 128Mi
+
+application:
+  image: gitlab.s059222.edu.slurm.io:5050/s059222/application
+  imageTag: main.10
+  imagePullSecret: cicd-gitlab-registry
+
+  name: flask
+  replicas: 1
+
+  service:
+    app_port: 5000
+    port: 5000
+
+  resources:
+    limits:
+      cpu: 400m
+      memory: 256Mi
+    requests:
+      cpu: 200m
+      memory: 128Mi
+
+  ingress:
+    host: flask.s059222.edu.slurm.io

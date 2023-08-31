@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app: {{ .Chart.Name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.application.name }}
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    kubernetes.io/ingress.class: nginx
+  name: {{ .Release.Name }}
+spec:
+  rules:
+  - host: {{ .Values.application.ingress.host }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Release.Name }}
+            port:
+              number: {{ .Values.application.service.port }}
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - {{ .Values.application.ingress.host }}
+    secretName: my-tls

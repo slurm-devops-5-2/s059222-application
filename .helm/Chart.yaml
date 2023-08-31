@@ -1,0 +1,6 @@
+description: Generic Helm chart for Flask application in Kubernetes.
+home: https://slurm.io/
+name: application
+version: 1
+sources:
+- https://gitlab.s059222.edu.slurm.io/s059222/application
